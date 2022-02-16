@@ -34,7 +34,6 @@ func (c Config) Example() string {
 				// backoff_multiplier = 1.6
 				// backoff_max_delay = 120
 				// backoff_jitter = 0.2
-				// backoff_ = 1.6
 				// backoff_min_connect_timeout = 0
 			}`
 }
