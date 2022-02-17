@@ -54,7 +54,7 @@ func ErrorClassifier(meta schema.ClientMeta, resourceName string, err error) dia
 	if s, ok := status.FromError(err); ok {
 		if v, ok := grpcCodeToDiag[s.Code()]; ok {
 			return diag.Diagnostics{
-				RedactError(client.projects, diag.NewBaseError(err, v.typ, diag.WithType(v.typ), diag.WithSeverity(v.severity), diag.WithResourceName(resourceName), diag.WithSummary("%s", v.summary), diag.WithDetails("%s", s.Message()))),
+				RedactError(client.projects, diag.NewBaseError(err, v.typ, diag.WithType(v.typ), diag.WithResourceName(resourceName), diag.WithSummary("%s", v.summary), diag.WithDetails("%s", s.Message()), diag.WithNoOverwrite(), diag.WithSeverity(v.severity))),
 			}
 		}
 	}
@@ -71,7 +71,7 @@ func ErrorClassifier(meta schema.ClientMeta, resourceName string, err error) dia
 		if grpcCode, ok := httpCodeToGRPCCode[gerr.Code]; ok {
 			if v, ok := grpcCodeToDiag[grpcCode]; ok {
 				return diag.Diagnostics{
-					RedactError(client.projects, diag.NewBaseError(err, v.typ, diag.WithType(v.typ), diag.WithSeverity(v.severity), diag.WithResourceName(resourceName), diag.WithSummary("2- %s %s %+v %+v", v.summary, gerr.Body, gerr.Header, gerr.Details))),
+					RedactError(client.projects, diag.NewBaseError(err, v.typ, diag.WithType(v.typ), diag.WithResourceName(resourceName), diag.WithSummary("2- %s %s %+v %+v", v.summary, gerr.Body, gerr.Header, gerr.Details), diag.WithNoOverwrite(), diag.WithSeverity(v.severity))),
 				}
 			}
 		}
