@@ -7,7 +7,6 @@ import (
 
 	"github.com/cloudquery/cq-provider-gcp/client"
 	"github.com/cloudquery/cq-provider-sdk/provider/schema"
-	"google.golang.org/api/iam/v1"
 	storage "google.golang.org/api/storage/v1"
 )
 
@@ -588,7 +587,7 @@ func resolveBucketPolicy(ctx context.Context, meta schema.ClientMeta, resource *
 		}
 		return err
 	}
-	output := list.(*iam.Policy)
+	output := list.(*storage.Policy)
 
 	var policy map[string]interface{}
 	data, err := json.Marshal(output)

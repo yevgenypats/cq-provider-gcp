@@ -8,7 +8,6 @@ import (
 	"github.com/cloudquery/cq-provider-gcp/client"
 	"github.com/cloudquery/cq-provider-sdk/provider/schema"
 	"google.golang.org/api/cloudresourcemanager/v3"
-	"google.golang.org/api/iam/v1"
 )
 
 func ResourceManagerFolders() *schema.Table {
@@ -110,7 +109,7 @@ func resolveResourceManagerFolderPolicy(ctx context.Context, meta schema.ClientM
 	if err != nil {
 		return err
 	}
-	output := list.(*iam.Policy)
+	output := list.(*cloudresourcemanager.Policy)
 
 	var policy map[string]interface{}
 	data, err := json.Marshal(output)

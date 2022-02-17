@@ -8,7 +8,6 @@ import (
 	"github.com/cloudquery/cq-provider-gcp/client"
 	"github.com/cloudquery/cq-provider-sdk/provider/schema"
 	"google.golang.org/api/cloudresourcemanager/v3"
-	"google.golang.org/api/iam/v1"
 )
 
 func ResourceManagerProjects() *schema.Table {
@@ -114,7 +113,7 @@ func resolveResourceManagerProjectPolicy(ctx context.Context, meta schema.Client
 	if err != nil {
 		return err
 	}
-	output := list.(*iam.Policy)
+	output := list.(*cloudresourcemanager.Policy)
 
 	var policy map[string]interface{}
 	data, err := json.Marshal(output)
