@@ -12,7 +12,7 @@ func SQLInstances() *schema.Table {
 	return &schema.Table{
 		Name:         "gcp_sql_instances",
 		Description:  "A Cloud SQL instance resource",
-		Resolver:     client.RetryingResolver(fetchSqlInstances),
+		Resolver:     fetchSqlInstances,
 		Multiplex:    client.ProjectMultiplex,
 		DeleteFilter: client.DeleteProjectFilter,
 		IgnoreError:  client.IgnoreErrorHandler,
@@ -623,7 +623,7 @@ func SQLInstances() *schema.Table {
 			{
 				Name:        "gcp_sql_instance_ip_addresses",
 				Description: "Database instance IP Mapping",
-				Resolver:    client.RetryingResolver(fetchSqlInstanceIpAddresses),
+				Resolver:    fetchSqlInstanceIpAddresses,
 				Columns: []schema.Column{
 					{
 						Name:        "instance_cq_id",
@@ -656,7 +656,7 @@ func SQLInstances() *schema.Table {
 			{
 				Name:          "gcp_sql_instance_settings_deny_maintenance_periods",
 				Description:   "Deny Maintenance Periods This specifies a date range during when all CSA rollout will be denied",
-				Resolver:      client.RetryingResolver(fetchSqlInstanceSettingsDenyMaintenancePeriods),
+				Resolver:      fetchSqlInstanceSettingsDenyMaintenancePeriods,
 				IgnoreInTests: true,
 				Columns: []schema.Column{
 					{
@@ -690,7 +690,7 @@ func SQLInstances() *schema.Table {
 			{
 				Name:          "gcp_sql_instance_settings_ip_config_authorized_networks",
 				Description:   "An entry for an Access Control list",
-				Resolver:      client.RetryingResolver(fetchSqlInstanceSettingsIpConfigurationAuthorizedNetworks),
+				Resolver:      fetchSqlInstanceSettingsIpConfigurationAuthorizedNetworks,
 				IgnoreInTests: true,
 				Columns: []schema.Column{
 					{

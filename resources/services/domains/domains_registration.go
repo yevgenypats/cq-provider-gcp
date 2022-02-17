@@ -15,7 +15,7 @@ func DomainsRegistration() *schema.Table {
 	return &schema.Table{
 		Name:          "gcp_domains_registrations",
 		Description:   "The `Registration` resource facilitates managing and configuring domain name registrations To create a new `Registration` resource, find a suitable domain name by calling the `SearchDomains` method with a query to see available domain name options After choosing a name, call `RetrieveRegisterParameters` to ensure availability and obtain information like pricing, which is needed to build a call to `RegisterDomain`",
-		Resolver:      client.RetryingResolver(fetchDomainsRegistrations),
+		Resolver:      fetchDomainsRegistrations,
 		Multiplex:     client.ProjectMultiplex,
 		IgnoreError:   client.IgnoreErrorHandler,
 		DeleteFilter:  client.DeleteProjectFilter,
@@ -373,7 +373,7 @@ func DomainsRegistration() *schema.Table {
 			{
 				Name:        "gcp_domains_registration_glue_records",
 				Description: "Defines a host on your domain that is a DNS name server for your domain and/or other domains Glue records are a way of making the IP address of a name server known, even when it serves DNS queries for its parent domain For example, when `nsexamplecom` is a name server for `examplecom`, the host `nsexamplecom` must have a glue record to break the circular DNS reference",
-				Resolver:    client.RetryingResolver(fetchDomainsRegistrationGlueRecords),
+				Resolver:    fetchDomainsRegistrationGlueRecords,
 				Options:     schema.TableCreationOptions{PrimaryKeys: []string{"registration_cq_id", "host_name"}},
 				Columns: []schema.Column{
 					{

@@ -13,7 +13,7 @@ func MonitoringAlertPolicies() *schema.Table {
 	return &schema.Table{
 		Name:         "gcp_monitoring_alert_policies",
 		Description:  "A description of the conditions under which some aspect of your system is considered to be \"unhealthy\" and the ways to notify people or services about this state For an overview of alert policies, see Introduction to Alerting (https://cloudgooglecom/monitoring/alerts/)",
-		Resolver:     client.RetryingResolver(fetchMonitoringAlertPolicies),
+		Resolver:     fetchMonitoringAlertPolicies,
 		Multiplex:    client.ProjectMultiplex,
 		IgnoreError:  client.IgnoreErrorHandler,
 		Options:      schema.TableCreationOptions{PrimaryKeys: []string{"project_id", "name"}},
@@ -109,7 +109,7 @@ func MonitoringAlertPolicies() *schema.Table {
 			{
 				Name:        "gcp_monitoring_alert_policy_conditions",
 				Description: "A condition is a true/false test that determines when an alerting policy should open an incident If a condition evaluates to true, it signifies that something is wrong",
-				Resolver:    client.RetryingResolver(fetchMonitoringAlertPolicyConditions),
+				Resolver:    fetchMonitoringAlertPolicyConditions,
 				Options:     schema.TableCreationOptions{PrimaryKeys: []string{"alert_policy_cq_id", "name"}},
 				Columns: []schema.Column{
 					{
@@ -223,7 +223,7 @@ func MonitoringAlertPolicies() *schema.Table {
 					{
 						Name:        "gcp_monitoring_alert_policy_condition_absent_aggregations",
 						Description: "Describes how to combine multiple time series to provide a different view of the data Aggregation of time series is done in two steps First, each time series in the set is aligned to the same time interval boundaries, then the set of time series is optionally reduced in numberAlignment consists of applying the per_series_aligner operation to each time series after its data has been divided into regular alignment_period time intervals This process takes all of the data points in an alignment period, applies a mathematical transformation such as averaging, minimum, maximum, delta, etc, and converts them into a single data point per periodReduction is when the aligned and transformed time series can optionally be combined, reducing the number of time series through similar mathematical transformations Reduction involves applying a cross_series_reducer to all the time series, optionally sorting the time series into subsets with group_by_fields, and applying the reducer to each subsetThe raw time series data can contain a huge amount of information from multiple sources Alignment and reduction transforms this mass of data into a more manageable and representative collection of data, for example \"the 95% latency across the average of all tasks in a cluster\" This representative data can be more easily graphed and comprehended, and the individual time series data is still available for later drilldown For more details, see Filtering and aggregation (https://cloudgooglecom/monitoring/api/v3/aggregation)",
-						Resolver:    client.RetryingResolver(fetchMonitoringAlertPolicyConditionAbsentAggregations),
+						Resolver:    fetchMonitoringAlertPolicyConditionAbsentAggregations,
 						Columns: []schema.Column{
 							{
 								Name:        "alert_policy_condition_cq_id",
@@ -256,7 +256,7 @@ func MonitoringAlertPolicies() *schema.Table {
 					{
 						Name:        "gcp_monitoring_alert_policy_condition_threshold_aggregations",
 						Description: "Describes how to combine multiple time series to provide a different view of the data Aggregation of time series is done in two steps First, each time series in the set is aligned to the same time interval boundaries, then the set of time series is optionally reduced in numberAlignment consists of applying the per_series_aligner operation to each time series after its data has been divided into regular alignment_period time intervals This process takes all of the data points in an alignment period, applies a mathematical transformation such as averaging, minimum, maximum, delta, etc, and converts them into a single data point per periodReduction is when the aligned and transformed time series can optionally be combined, reducing the number of time series through similar mathematical transformations Reduction involves applying a cross_series_reducer to all the time series, optionally sorting the time series into subsets with group_by_fields, and applying the reducer to each subsetThe raw time series data can contain a huge amount of information from multiple sources Alignment and reduction transforms this mass of data into a more manageable and representative collection of data, for example \"the 95% latency across the average of all tasks in a cluster\" This representative data can be more easily graphed and comprehended, and the individual time series data is still available for later drilldown For more details, see Filtering and aggregation (https://cloudgooglecom/monitoring/api/v3/aggregation)",
-						Resolver:    client.RetryingResolver(fetchMonitoringAlertPolicyConditionThresholdAggregations),
+						Resolver:    fetchMonitoringAlertPolicyConditionThresholdAggregations,
 						Columns: []schema.Column{
 							{
 								Name:        "alert_policy_condition_cq_id",
@@ -289,7 +289,7 @@ func MonitoringAlertPolicies() *schema.Table {
 					{
 						Name:        "gcp_monitoring_alert_policy_condition_denominator_aggs",
 						Description: "Describes how to combine multiple time series to provide a different view of the data Aggregation of time series is done in two steps First, each time series in the set is aligned to the same time interval boundaries, then the set of time series is optionally reduced in numberAlignment consists of applying the per_series_aligner operation to each time series after its data has been divided into regular alignment_period time intervals This process takes all of the data points in an alignment period, applies a mathematical transformation such as averaging, minimum, maximum, delta, etc, and converts them into a single data point per periodReduction is when the aligned and transformed time series can optionally be combined, reducing the number of time series through similar mathematical transformations Reduction involves applying a cross_series_reducer to all the time series, optionally sorting the time series into subsets with group_by_fields, and applying the reducer to each subsetThe raw time series data can contain a huge amount of information from multiple sources Alignment and reduction transforms this mass of data into a more manageable and representative collection of data, for example \"the 95% latency across the average of all tasks in a cluster\" This representative data can be more easily graphed and comprehended, and the individual time series data is still available for later drilldown For more details, see Filtering and aggregation (https://cloudgooglecom/monitoring/api/v3/aggregation)",
-						Resolver:    client.RetryingResolver(fetchMonitoringAlertPolicyConditionDenominatorAggregations),
+						Resolver:    fetchMonitoringAlertPolicyConditionDenominatorAggregations,
 						Columns: []schema.Column{
 							{
 								Name:        "alert_policy_condition_cq_id",

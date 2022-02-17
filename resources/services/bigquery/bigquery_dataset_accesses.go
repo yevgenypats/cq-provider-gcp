@@ -14,7 +14,7 @@ func BigqueryDatasetAccesses() *schema.Table {
 	return &schema.Table{
 		Name:        "gcp_bigquery_dataset_accesses",
 		IgnoreError: client.IgnoreErrorHandler,
-		Resolver:    client.RetryingResolver(fetchBigqueryDatasetAccesses),
+		Resolver:    fetchBigqueryDatasetAccesses,
 		Columns: []schema.Column{
 			{
 				Name:     "dataset_cq_id",

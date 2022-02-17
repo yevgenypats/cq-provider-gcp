@@ -11,7 +11,7 @@ func IamRoles() *schema.Table {
 	return &schema.Table{
 		Name:         "gcp_iam_roles",
 		Description:  "A role in the Identity and Access Management API",
-		Resolver:     client.RetryingResolver(fetchIamRoles),
+		Resolver:     fetchIamRoles,
 		Multiplex:    client.ProjectMultiplex,
 		DeleteFilter: client.DeleteProjectFilter,
 		IgnoreError:  client.IgnoreErrorHandler,

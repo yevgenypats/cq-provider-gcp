@@ -12,7 +12,7 @@ func ComputeNetworks() *schema.Table {
 	return &schema.Table{
 		Name:         "gcp_compute_networks",
 		Description:  "Represents a VPC Network resource  Networks connect resources to each other and to the internet",
-		Resolver:     client.RetryingResolver(fetchComputeNetworks),
+		Resolver:     fetchComputeNetworks,
 		Multiplex:    client.ProjectMultiplex,
 		IgnoreError:  client.IgnoreErrorHandler,
 		DeleteFilter: client.DeleteProjectFilter,
@@ -93,7 +93,7 @@ func ComputeNetworks() *schema.Table {
 			{
 				Name:        "gcp_compute_network_peerings",
 				Description: "A network peering attached to a network resource The message includes the peering name, peer network, peering state, and a flag indicating whether Google Compute Engine should automatically create routes for the peering",
-				Resolver:    client.RetryingResolver(fetchComputeNetworkPeerings),
+				Resolver:    fetchComputeNetworkPeerings,
 				Options:     schema.TableCreationOptions{PrimaryKeys: []string{"network_cq_id", "name"}},
 				Columns: []schema.Column{
 					{

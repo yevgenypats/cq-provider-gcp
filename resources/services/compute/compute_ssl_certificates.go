@@ -12,7 +12,7 @@ func ComputeSslCertificates() *schema.Table {
 	return &schema.Table{
 		Name:         "gcp_compute_ssl_certificates",
 		Description:  "Represents an SSL Certificate resource.",
-		Resolver:     client.RetryingResolver(fetchComputeSslCertificates),
+		Resolver:     fetchComputeSslCertificates,
 		Multiplex:    client.ProjectMultiplex,
 		IgnoreError:  client.IgnoreErrorHandler,
 		DeleteFilter: client.DeleteProjectFilter,

@@ -91,7 +91,8 @@ func (c Client) Retry(ctx context.Context, bo gax.Backoff, f func() (stop bool, 
 
 func shouldRetryFunc(log hclog.Logger) func(err error) bool {
 	return func(err error) bool {
-		if gerr, ok := err.(*googleapi.Error); ok && len(gerr.Errors) > 0 {
+		var gerr *googleapi.Error
+		if errors.As(err, &gerr) && len(gerr.Errors) > 0 {
 			switch gerr.Errors[0].Reason {
 			case "accessNotConfigured", "forbidden", "SERVICE_DISABLED":
 				log.Debug("retrier not retrying", "err_reason", gerr.Errors[0].Reason, "err", err)

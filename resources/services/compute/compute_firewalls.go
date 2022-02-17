@@ -12,7 +12,7 @@ func ComputeFirewalls() *schema.Table {
 	return &schema.Table{
 		Name:         "gcp_compute_firewalls",
 		Description:  "Represents a Firewall Rule resource  Firewall rules allow or deny ingress traffic to, and egress traffic from your instances For more information, read Firewall rules",
-		Resolver:     client.RetryingResolver(fetchComputeFirewalls),
+		Resolver:     fetchComputeFirewalls,
 		IgnoreError:  client.IgnoreErrorHandler,
 		Multiplex:    client.ProjectMultiplex,
 		DeleteFilter: client.DeleteProjectFilter,
@@ -124,7 +124,7 @@ func ComputeFirewalls() *schema.Table {
 		Relations: []*schema.Table{
 			{
 				Name:     "gcp_compute_firewall_allowed",
-				Resolver: client.RetryingResolver(fetchComputeFirewallAllowed),
+				Resolver: fetchComputeFirewallAllowed,
 				Columns: []schema.Column{
 					{
 						Name:        "firewall_cq_id",
@@ -152,7 +152,7 @@ func ComputeFirewalls() *schema.Table {
 			},
 			{
 				Name:     "gcp_compute_firewall_denied",
-				Resolver: client.RetryingResolver(fetchComputeFirewallDenied),
+				Resolver: fetchComputeFirewallDenied,
 				Columns: []schema.Column{
 					{
 						Name:        "firewall_cq_id",

@@ -11,7 +11,7 @@ func ComputeTargetSslProxies() *schema.Table {
 	return &schema.Table{
 		Name:         "gcp_compute_target_ssl_proxies",
 		Description:  "Represents a Target SSL Proxy resource",
-		Resolver:     client.RetryingResolver(fetchComputeTargetSslProxies),
+		Resolver:     fetchComputeTargetSslProxies,
 		Multiplex:    client.ProjectMultiplex,
 		IgnoreError:  client.IgnoreErrorHandler,
 		DeleteFilter: client.DeleteProjectFilter,

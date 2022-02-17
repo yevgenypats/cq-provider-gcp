@@ -14,7 +14,7 @@ func KmsKeyrings() *schema.Table {
 	return &schema.Table{
 		Name:                 "gcp_kms_keyrings",
 		Description:          "A KeyRing is a toplevel logical grouping of CryptoKeys.",
-		Resolver:             client.RetryingResolver(fetchKmsKeyrings),
+		Resolver:             fetchKmsKeyrings,
 		Multiplex:            client.ProjectMultiplex,
 		IgnoreError:          client.IgnoreErrorHandler,
 		DeleteFilter:         client.DeleteProjectFilter,
@@ -48,7 +48,7 @@ func KmsKeyrings() *schema.Table {
 			{
 				Name:                 "gcp_kms_keyring_crypto_keys",
 				Description:          "A CryptoKey represents a logical key that can be used for cryptographic operations.",
-				Resolver:             client.RetryingResolver(fetchKmsKeyringCryptoKeys),
+				Resolver:             fetchKmsKeyringCryptoKeys,
 				IgnoreError:          client.IgnoreErrorHandler,
 				PostResourceResolver: client.AddGcpMetadata,
 				Options:              schema.TableCreationOptions{PrimaryKeys: []string{"keyring_cq_id", "name"}},
