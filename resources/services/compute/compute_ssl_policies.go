@@ -13,7 +13,7 @@ func ComputeSslPolicies() *schema.Table {
 	return &schema.Table{
 		Name:         "gcp_compute_ssl_policies",
 		Description:  "Represents an SSL Policy resource",
-		Resolver:     fetchComputeSslPolicies,
+		Resolver:     client.RetryingResolver(fetchComputeSslPolicies),
 		Multiplex:    client.ProjectMultiplex,
 		IgnoreError:  client.IgnoreErrorHandler,
 		DeleteFilter: client.DeleteProjectFilter,
@@ -88,7 +88,7 @@ func ComputeSslPolicies() *schema.Table {
 		Relations: []*schema.Table{
 			{
 				Name:          "gcp_compute_ssl_policy_warnings",
-				Resolver:      fetchComputeSslPolicyWarnings,
+				Resolver:      client.RetryingResolver(fetchComputeSslPolicyWarnings),
 				IgnoreInTests: true,
 				Columns: []schema.Column{
 					{

@@ -13,7 +13,7 @@ func DNSPolicies() *schema.Table {
 	return &schema.Table{
 		Name:         "gcp_dns_policies",
 		Description:  "A policy is a collection of DNS rules applied to one or more Virtual Private Cloud resources",
-		Resolver:     fetchDnsPolicies,
+		Resolver:     client.RetryingResolver(fetchDnsPolicies),
 		Multiplex:    client.ProjectMultiplex,
 		IgnoreError:  client.IgnoreErrorHandler,
 		Options:      schema.TableCreationOptions{PrimaryKeys: []string{"project_id", "id"}},
@@ -66,7 +66,7 @@ func DNSPolicies() *schema.Table {
 		Relations: []*schema.Table{
 			{
 				Name:     "gcp_dns_policy_alternative_name_servers",
-				Resolver: fetchDnsPolicyAlternativeNameServers,
+				Resolver: client.RetryingResolver(fetchDnsPolicyAlternativeNameServers),
 				Options:  schema.TableCreationOptions{PrimaryKeys: []string{"policy_cq_id", "ipv4_address"}},
 				Columns: []schema.Column{
 					{
@@ -99,7 +99,7 @@ func DNSPolicies() *schema.Table {
 			},
 			{
 				Name:     "gcp_dns_policy_networks",
-				Resolver: fetchDnsPolicyNetworks,
+				Resolver: client.RetryingResolver(fetchDnsPolicyNetworks),
 				Options:  schema.TableCreationOptions{PrimaryKeys: []string{"policy_cq_id", "network_url"}},
 				Columns: []schema.Column{
 					{

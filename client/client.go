@@ -6,11 +6,11 @@ import (
 	"os"
 	"time"
 
-	"google.golang.org/api/option"
-
 	"github.com/cloudquery/cq-provider-sdk/provider/schema"
+
 	"github.com/hashicorp/go-hclog"
 	"google.golang.org/api/cloudresourcemanager/v1"
+	"google.golang.org/api/option"
 )
 
 const defaultProjectIdName = "<CHANGE_THIS_TO_YOUR_PROJECT_ID>"
@@ -20,16 +20,19 @@ const serviceAccountEnvKey = "CQ_SERVICE_ACCOUNT_KEY_JSON"
 type Client struct {
 	projects []string
 	logger   hclog.Logger
+	backoff  BackoffSettings
+
 	// All gcp services initialized by client
 	Services *Services
 	// this is set by table client multiplexer
 	ProjectId string
 }
 
-func NewGcpClient(log hclog.Logger, projects []string, services *Services) *Client {
+func NewGcpClient(log hclog.Logger, bo BackoffSettings, projects []string, services *Services) *Client {
 	return &Client{
-		logger:   log,
 		projects: projects,
+		logger:   log,
+		backoff:  bo,
 		Services: services,
 	}
 }
@@ -51,15 +54,21 @@ func (c Client) withProject(project string) *Client {
 func Configure(logger hclog.Logger, config interface{}) (schema.ClientMeta, error) {
 	providerConfig := config.(*Config)
 	projects := providerConfig.ProjectIDs
-	serviceAccountKeyJSON := []byte(providerConfig.ServiceAccountKeyJSON)
 
+	serviceAccountKeyJSON := []byte(providerConfig.ServiceAccountKeyJSON)
 	if len(serviceAccountKeyJSON) == 0 {
 		serviceAccountKeyJSON = []byte(os.Getenv(serviceAccountEnvKey))
 	}
 
+	// Add a fake request reason because it is not possible to pass nil options
+	options := append([]option.ClientOption{option.WithRequestReason("cloudquery resource fetch")}, providerConfig.ClientOptions()...)
+	if len(serviceAccountKeyJSON) != 0 {
+		options = append(options, option.WithCredentialsJSON(serviceAccountKeyJSON))
+	}
+
 	var err error
 	if len(providerConfig.ProjectIDs) == 0 {
-		projects, err = getProjects(providerConfig, serviceAccountKeyJSON, logger, providerConfig.ProjectFilter)
+		projects, err = getProjects(logger, providerConfig.ProjectFilter, options...)
 		if err != nil {
 			return nil, err
 		}
@@ -68,11 +77,12 @@ func Configure(logger hclog.Logger, config interface{}) (schema.ClientMeta, erro
 	if err := validateProjects(projects); err != nil {
 		return nil, err
 	}
-	services, err := initServices(context.Background(), providerConfig, serviceAccountKeyJSON)
+	services, err := initServices(context.Background(), options)
 	if err != nil {
 		return nil, err
 	}
-	client := NewGcpClient(logger, projects, services)
+
+	client := NewGcpClient(logger, providerConfig.Backoff(), projects, services)
 	return client, nil
 }
 
@@ -85,15 +95,9 @@ func validateProjects(projects []string) error {
 	return nil
 }
 
-func getProjects(cfg *Config, serviceAccountKeyJSON []byte, logger hclog.Logger, filter string) ([]string, error) {
+func getProjects(logger hclog.Logger, filter string, options ...option.ClientOption) ([]string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*60)
 	defer cancel()
-
-	// Add a fake request reason because it is not possible to pass nil options
-	options := append([]option.ClientOption{option.WithRequestReason("cloudquery resource fetch")}, cfg.ClientOptions()...)
-	if len(serviceAccountKeyJSON) != 0 {
-		options = append(options, option.WithCredentialsJSON(serviceAccountKeyJSON))
-	}
 
 	service, err := cloudresourcemanager.NewService(ctx, options...)
 	if err != nil {

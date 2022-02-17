@@ -12,7 +12,7 @@ func ComputeInstances() *schema.Table {
 	return &schema.Table{
 		Name:         "gcp_compute_instances",
 		Description:  "Represents an Instance resource  An instance is a virtual machine that is hosted on Google Cloud Platform For more information, read Virtual Machine Instances",
-		Resolver:     fetchComputeInstances,
+		Resolver:     client.RetryingResolver(fetchComputeInstances),
 		Multiplex:    client.ProjectMultiplex,
 		IgnoreError:  client.IgnoreErrorHandler,
 		DeleteFilter: client.DeleteProjectFilter,
@@ -283,7 +283,7 @@ func ComputeInstances() *schema.Table {
 			{
 				Name:        "gcp_compute_instance_disks",
 				Description: "An instance-attached disk resource",
-				Resolver:    fetchComputeInstanceDisks,
+				Resolver:    client.RetryingResolver(fetchComputeInstanceDisks),
 				Columns: []schema.Column{
 					{
 						Name:        "instance_cq_id",
@@ -508,7 +508,7 @@ func ComputeInstances() *schema.Table {
 			{
 				Name:        "gcp_compute_instance_network_interfaces",
 				Description: "A network interface resource attached to an instance",
-				Resolver:    fetchComputeInstanceNetworkInterfaces,
+				Resolver:    client.RetryingResolver(fetchComputeInstanceNetworkInterfaces),
 				Columns: []schema.Column{
 					{
 						Name:        "instance_cq_id",
@@ -567,7 +567,7 @@ func ComputeInstances() *schema.Table {
 					{
 						Name:          "gcp_compute_instance_network_interface_access_configs",
 						Description:   "An access configuration attached to an instance's network interface Only one access config per instance is supported",
-						Resolver:      fetchComputeInstanceNetworkInterfaceAccessConfigs,
+						Resolver:      client.RetryingResolver(fetchComputeInstanceNetworkInterfaceAccessConfigs),
 						IgnoreInTests: true,
 						Columns: []schema.Column{
 							{
@@ -622,7 +622,7 @@ func ComputeInstances() *schema.Table {
 					{
 						Name:          "gcp_compute_instance_network_interface_alias_ip_ranges",
 						Description:   "An alias IP range attached to an instance's network interface",
-						Resolver:      fetchComputeInstanceNetworkInterfaceAliasIpRanges,
+						Resolver:      client.RetryingResolver(fetchComputeInstanceNetworkInterfaceAliasIpRanges),
 						IgnoreInTests: true,
 						Columns: []schema.Column{
 							{
@@ -653,7 +653,7 @@ func ComputeInstances() *schema.Table {
 			{
 				Name:          "gcp_compute_instance_scheduling_node_affinities",
 				Description:   "Node Affinity: the configuration of desired nodes onto which this Instance could be scheduled",
-				Resolver:      fetchComputeInstanceSchedulingNodeAffinities,
+				Resolver:      client.RetryingResolver(fetchComputeInstanceSchedulingNodeAffinities),
 				IgnoreInTests: true,
 				Columns: []schema.Column{
 					{
@@ -688,7 +688,7 @@ func ComputeInstances() *schema.Table {
 				Name:        "gcp_compute_instance_service_accounts",
 				Description: "A service account",
 				IgnoreError: client.IgnoreErrorHandler,
-				Resolver:    fetchComputeInstanceServiceAccounts,
+				Resolver:    client.RetryingResolver(fetchComputeInstanceServiceAccounts),
 				Options:     schema.TableCreationOptions{PrimaryKeys: []string{"instance_cq_id", "email"}},
 				Columns: []schema.Column{
 					{

@@ -14,7 +14,7 @@ func ComputeURLMaps() *schema.Table {
 	return &schema.Table{
 		Name:         "gcp_compute_url_maps",
 		Description:  "Represents a URL Map resource",
-		Resolver:     fetchComputeUrlMaps,
+		Resolver:     client.RetryingResolver(fetchComputeUrlMaps),
 		Multiplex:    client.ProjectMultiplex,
 		IgnoreError:  client.IgnoreErrorHandler,
 		DeleteFilter: client.DeleteProjectFilter,
@@ -289,7 +289,7 @@ func ComputeURLMaps() *schema.Table {
 			{
 				Name:          "gcp_compute_url_map_weighted_backend_services",
 				Description:   "In contrast to a single BackendService in HttpRouteAction to which all matching traffic is directed to, WeightedBackendService allows traffic to be split across multiple BackendServices",
-				Resolver:      fetchComputeUrlMapWeightedBackendServices,
+				Resolver:      client.RetryingResolver(fetchComputeUrlMapWeightedBackendServices),
 				IgnoreInTests: true,
 				Columns: []schema.Column{
 					{
@@ -319,7 +319,7 @@ func ComputeURLMaps() *schema.Table {
 			{
 				Name:        "gcp_compute_url_map_host_rules",
 				Description: "UrlMaps A host-matching rule for a URL If matched, will use the named PathMatcher to select the BackendService",
-				Resolver:    fetchComputeUrlMapHostRules,
+				Resolver:    client.RetryingResolver(fetchComputeUrlMapHostRules),
 				Columns: []schema.Column{
 					{
 						Name:        "url_map_cq_id",
@@ -347,7 +347,7 @@ func ComputeURLMaps() *schema.Table {
 			{
 				Name:        "gcp_compute_url_map_path_matchers",
 				Description: "A matcher for the path portion of the URL The BackendService from the longest-matched rule will serve the URL If no rule was matched, the default service will be used",
-				Resolver:    fetchComputeUrlMapPathMatchers,
+				Resolver:    client.RetryingResolver(fetchComputeUrlMapPathMatchers),
 				Columns: []schema.Column{
 					{
 						Name:        "url_map_cq_id",
@@ -438,7 +438,7 @@ func ComputeURLMaps() *schema.Table {
 			{
 				Name:        "gcp_compute_url_map_tests",
 				Description: "Message for the expected URL mappings",
-				Resolver:    fetchComputeUrlMapTests,
+				Resolver:    client.RetryingResolver(fetchComputeUrlMapTests),
 				Columns: []schema.Column{
 					{
 						Name:        "url_map_cq_id",

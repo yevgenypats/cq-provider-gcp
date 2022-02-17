@@ -2,10 +2,13 @@ package client
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
+	"github.com/cloudquery/cq-provider-sdk/provider/schema"
 	"github.com/googleapis/gax-go/v2"
+	"github.com/hashicorp/go-hclog"
 	"google.golang.org/api/googleapi"
 	"google.golang.org/grpc/status"
 )
@@ -83,5 +86,35 @@ func (c Client) Retry(ctx context.Context, bo gax.Backoff, f func() (stop bool, 
 			}
 			return cerr
 		}
+	}
+}
+
+func shouldRetryFunc(log hclog.Logger) func(err error) bool {
+	return func(err error) bool {
+		if gerr, ok := err.(*googleapi.Error); ok && len(gerr.Errors) > 0 {
+			switch gerr.Errors[0].Reason {
+			case "accessNotConfigured", "forbidden", "SERVICE_DISABLED":
+				log.Debug("retrier not retrying", "err_reason", gerr.Errors[0].Reason, "err", err)
+				return false
+			}
+		}
+		if errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
+			log.Debug("retrier not retrying", "err", err)
+			return false
+		}
+
+		log.Debug("retrying error", "err", err)
+		return true
+	}
+}
+
+func RetryingResolver(f schema.TableResolver) schema.TableResolver {
+	return func(ctx context.Context, meta schema.ClientMeta, parent *schema.Resource, res chan<- interface{}) error {
+		cl := meta.(*Client)
+		return gax.Invoke(ctx, func(ctx context.Context, _ gax.CallSettings) error {
+			return f(ctx, meta, parent, res)
+		}, gax.WithRetry(func() gax.Retryer {
+			return gax.OnErrorFunc(cl.backoff.Gax, shouldRetryFunc(cl.logger))
+		}))
 	}
 }

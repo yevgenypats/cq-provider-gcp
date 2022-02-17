@@ -13,7 +13,7 @@ func DNSManagedZones() *schema.Table {
 	return &schema.Table{
 		Name:         "gcp_dns_managed_zones",
 		Description:  "A zone is a subtree of the DNS namespace under one administrative responsibility A ManagedZone is a resource that represents a DNS zone hosted by the Cloud DNS service",
-		Resolver:     fetchDnsManagedZones,
+		Resolver:     client.RetryingResolver(fetchDnsManagedZones),
 		Multiplex:    client.ProjectMultiplex,
 		IgnoreError:  client.IgnoreErrorHandler,
 		Options:      schema.TableCreationOptions{PrimaryKeys: []string{"project_id", "id"}},
@@ -155,7 +155,7 @@ func DNSManagedZones() *schema.Table {
 			{
 				Name:        "gcp_dns_managed_zone_dnssec_config_default_key_specs",
 				Description: "Parameters for DnsKey key generation Used for generating initial keys for a new ManagedZone and as default when adding a new DnsKey",
-				Resolver:    fetchDnsManagedZoneDnssecConfigDefaultKeySpecs,
+				Resolver:    client.RetryingResolver(fetchDnsManagedZoneDnssecConfigDefaultKeySpecs),
 				Columns: []schema.Column{
 					{
 						Name:        "managed_zone_cq_id",
@@ -191,7 +191,7 @@ func DNSManagedZones() *schema.Table {
 			},
 			{
 				Name:     "gcp_dns_managed_zone_forwarding_config_target_name_servers",
-				Resolver: fetchDnsManagedZoneForwardingConfigTargetNameServers,
+				Resolver: client.RetryingResolver(fetchDnsManagedZoneForwardingConfigTargetNameServers),
 				Columns: []schema.Column{
 					{
 						Name:        "managed_zone_cq_id",
@@ -222,7 +222,7 @@ func DNSManagedZones() *schema.Table {
 			},
 			{
 				Name:     "gcp_dns_managed_zone_private_visibility_config_networks",
-				Resolver: fetchDnsManagedZonePrivateVisibilityConfigNetworks,
+				Resolver: client.RetryingResolver(fetchDnsManagedZonePrivateVisibilityConfigNetworks),
 				Options:  schema.TableCreationOptions{PrimaryKeys: []string{"managed_zone_cq_id", "network_url"}},
 				Columns: []schema.Column{
 					{

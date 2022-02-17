@@ -14,7 +14,7 @@ func ComputeBackendServices() *schema.Table {
 	return &schema.Table{
 		Name:         "gcp_compute_backend_services",
 		Description:  "Represents a Backend Service resource  A backend service defines how Google Cloud load balancers distribute traffic The backend service configuration contains a set of values, such as the protocol used to connect to backends, various distribution and session settings, health checks, and timeouts These settings provide fine-grained control over how your load balancer behaves.",
-		Resolver:     fetchComputeBackendServices,
+		Resolver:     client.RetryingResolver(fetchComputeBackendServices),
 		Options:      schema.TableCreationOptions{PrimaryKeys: []string{"project_id", "id"}},
 		IgnoreError:  client.IgnoreErrorHandler,
 		Multiplex:    client.ProjectMultiplex,
@@ -475,7 +475,7 @@ func ComputeBackendServices() *schema.Table {
 			{
 				Name:        "gcp_compute_backend_service_backends",
 				Description: "Message containing information of one individual backend",
-				Resolver:    fetchComputeBackendServiceBackends,
+				Resolver:    client.RetryingResolver(fetchComputeBackendServiceBackends),
 				Columns: []schema.Column{
 					{
 						Name:        "backend_service_cq_id",

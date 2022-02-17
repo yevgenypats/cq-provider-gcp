@@ -14,7 +14,7 @@ func StorageBuckets() *schema.Table {
 	return &schema.Table{
 		Name:         "gcp_storage_buckets",
 		Description:  "The Buckets resource represents a bucket in Cloud Storage",
-		Resolver:     fetchStorageBuckets,
+		Resolver:     client.RetryingResolver(fetchStorageBuckets),
 		Multiplex:    client.ProjectMultiplex,
 		IgnoreError:  client.IgnoreErrorHandler,
 		DeleteFilter: client.DeleteProjectFilter,
@@ -221,7 +221,7 @@ func StorageBuckets() *schema.Table {
 			{
 				Name:          "gcp_storage_bucket_acls",
 				Description:   "Access controls on the bucket.",
-				Resolver:      fetchStorageBucketAcls,
+				Resolver:      client.RetryingResolver(fetchStorageBucketAcls),
 				IgnoreError:   client.IgnoreErrorHandler,
 				IgnoreInTests: true,
 				Options:       schema.TableCreationOptions{PrimaryKeys: []string{"bucket_cq_id", "id"}},
@@ -304,7 +304,7 @@ func StorageBuckets() *schema.Table {
 			{
 				Name:        "gcp_storage_bucket_cors",
 				Description: "The bucket's Cross-Origin Resource Sharing (CORS) configuration.",
-				Resolver:    fetchStorageBucketCors,
+				Resolver:    client.RetryingResolver(fetchStorageBucketCors),
 				Columns: []schema.Column{
 					{
 						Name:        "bucket_cq_id",
@@ -343,7 +343,7 @@ func StorageBuckets() *schema.Table {
 			{
 				Name:          "gcp_storage_bucket_default_object_acls",
 				Description:   "Default access controls to apply to new objects when no ACL is provided.",
-				Resolver:      fetchStorageBucketDefaultObjectAcls,
+				Resolver:      client.RetryingResolver(fetchStorageBucketDefaultObjectAcls),
 				Options:       schema.TableCreationOptions{PrimaryKeys: []string{"bucket_cq_id", "id"}},
 				IgnoreInTests: true,
 				Columns: []schema.Column{
@@ -435,7 +435,7 @@ func StorageBuckets() *schema.Table {
 			{
 				Name:        "gcp_storage_bucket_lifecycle_rules",
 				Description: "A lifecycle management rule, which is made of an action to take and the condition(s) under which the action will be taken.",
-				Resolver:    fetchStorageBucketLifecycleRules,
+				Resolver:    client.RetryingResolver(fetchStorageBucketLifecycleRules),
 				Columns: []schema.Column{
 					{
 						Name:        "bucket_cq_id",

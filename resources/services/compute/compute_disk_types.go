@@ -16,7 +16,7 @@ func ComputeDiskTypes() *schema.Table {
 	return &schema.Table{
 		Name:         "gcp_compute_disk_types",
 		Description:  "Represents a Disk Type resource.",
-		Resolver:     fetchComputeDiskTypes,
+		Resolver:     client.RetryingResolver(fetchComputeDiskTypes),
 		IgnoreError:  client.IgnoreErrorHandler,
 		Multiplex:    client.ProjectMultiplex,
 		DeleteFilter: client.DeleteProjectFilter,

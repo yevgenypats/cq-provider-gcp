@@ -13,7 +13,7 @@ func LoggingSinks() *schema.Table {
 	return &schema.Table{
 		Name:         "gcp_logging_sinks",
 		Description:  "Describes a sink used to export log entries to one of the following destinations in any project: a Cloud Storage bucket, a BigQuery dataset, a Cloud Pub/Sub topic or a Cloud Logging Bucket A logs filter controls which log entries are exported The sink must be created within a project, organization, billing account, or folder",
-		Resolver:     fetchLoggingSinks,
+		Resolver:     client.RetryingResolver(fetchLoggingSinks),
 		Multiplex:    client.ProjectMultiplex,
 		IgnoreError:  client.IgnoreErrorHandler,
 		DeleteFilter: client.DeleteProjectFilter,
@@ -92,7 +92,7 @@ func LoggingSinks() *schema.Table {
 			{
 				Name:        "gcp_logging_sink_exclusions",
 				Description: "Specifies a set of log entries that are not to be stored in Logging If your GCP resource receives a large volume of logs, you can use exclusions to reduce your chargeable logs Exclusions are processed after log sinks, so you can export log entries before they are excluded Note that organization-level and folder-level exclusions don't apply to child resources, and that you can't exclude audit log entries",
-				Resolver:    fetchLoggingSinkExclusions,
+				Resolver:    client.RetryingResolver(fetchLoggingSinkExclusions),
 				Options:     schema.TableCreationOptions{PrimaryKeys: []string{"sink_cq_id", "name"}},
 				Columns: []schema.Column{
 					{

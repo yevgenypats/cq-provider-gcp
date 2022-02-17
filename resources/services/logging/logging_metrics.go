@@ -13,7 +13,7 @@ func LoggingMetrics() *schema.Table {
 	return &schema.Table{
 		Name:         "gcp_logging_metrics",
 		Description:  "Describes a logs-based metric The value of the metric is the number of log entries that match a logs filter in a given time intervalLogs-based metrics can also be used to extract values from logs and create a distribution of the values The distribution records the statistics of the extracted values along with an optional histogram of the values as specified by the bucket options",
-		Resolver:     fetchLoggingMetrics,
+		Resolver:     client.RetryingResolver(fetchLoggingMetrics),
 		Multiplex:    client.ProjectMultiplex,
 		IgnoreError:  client.IgnoreErrorHandler,
 		DeleteFilter: client.DeleteProjectFilter,
@@ -173,7 +173,7 @@ func LoggingMetrics() *schema.Table {
 			{
 				Name:        "gcp_logging_metric_descriptor_labels",
 				Description: "A description of a label",
-				Resolver:    fetchLoggingMetricDescriptorLabels,
+				Resolver:    client.RetryingResolver(fetchLoggingMetricDescriptorLabels),
 				Options:     schema.TableCreationOptions{PrimaryKeys: []string{"metric_cq_id", "key"}},
 				Columns: []schema.Column{
 					{

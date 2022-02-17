@@ -11,7 +11,7 @@ func BigqueryDatasets() *schema.Table {
 	return &schema.Table{
 		Name:         "gcp_bigquery_datasets",
 		Description:  "dataset resources in the project",
-		Resolver:     fetchBigqueryDatasets,
+		Resolver:     client.RetryingResolver(fetchBigqueryDatasets),
 		IgnoreError:  client.IgnoreErrorHandler,
 		Multiplex:    client.ProjectMultiplex,
 		DeleteFilter: client.DeleteProjectFilter,

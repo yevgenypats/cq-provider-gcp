@@ -3,6 +3,7 @@ package client
 import (
 	"time"
 
+	"github.com/googleapis/gax-go/v2"
 	"google.golang.org/api/option"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/backoff"
@@ -40,20 +41,7 @@ func (c Config) Example() string {
 
 func (c Config) ClientOptions() []option.ClientOption {
 	p := grpc.ConnectParams{
-		Backoff: backoff.DefaultConfig,
-	}
-
-	if c.BaseDelay >= 0 {
-		p.Backoff.BaseDelay = time.Duration(c.BaseDelay) * time.Second
-	}
-	if c.Multiplier > 0 {
-		p.Backoff.Multiplier = c.Multiplier
-	}
-	if c.MaxDelay > 0 {
-		p.Backoff.MaxDelay = time.Duration(c.MaxDelay) * time.Second
-	}
-	if c.Jitter != 0 {
-		p.Backoff.Jitter = c.Jitter
+		Backoff: c.Backoff().Backoff,
 	}
 	if c.MinConnectTimeout >= 0 {
 		p.MinConnectTimeout = time.Duration(c.MinConnectTimeout) * time.Second
@@ -61,4 +49,33 @@ func (c Config) ClientOptions() []option.ClientOption {
 	return []option.ClientOption{
 		option.WithGRPCDialOption(grpc.WithConnectParams(p)),
 	}
+}
+
+type BackoffSettings struct {
+	Gax     gax.Backoff
+	Backoff backoff.Config
+}
+
+func (c Config) Backoff() BackoffSettings {
+	b := BackoffSettings{
+		Backoff: backoff.DefaultConfig,
+	}
+	if c.BaseDelay >= 0 {
+		b.Backoff.BaseDelay = time.Duration(c.BaseDelay) * time.Second
+	}
+	if c.Multiplier > 0 {
+		b.Backoff.Multiplier = c.Multiplier
+	}
+	if c.MaxDelay > 0 {
+		b.Backoff.MaxDelay = time.Duration(c.MaxDelay) * time.Second
+	}
+	if c.Jitter != 0 {
+		b.Backoff.Jitter = c.Jitter
+	}
+
+	b.Gax.Initial = b.Backoff.BaseDelay
+	b.Gax.Max = b.Backoff.MaxDelay
+	b.Gax.Multiplier = b.Backoff.Multiplier
+
+	return b
 }

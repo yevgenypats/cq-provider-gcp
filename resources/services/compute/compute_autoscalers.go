@@ -13,7 +13,7 @@ func ComputeAutoscalers() *schema.Table {
 	return &schema.Table{
 		Name:         "gcp_compute_autoscalers",
 		Description:  "Represents an Autoscaler resource.",
-		Resolver:     fetchComputeAutoscalers,
+		Resolver:     client.RetryingResolver(fetchComputeAutoscalers),
 		IgnoreError:  client.IgnoreErrorHandler,
 		Multiplex:    client.ProjectMultiplex,
 		DeleteFilter: client.DeleteProjectFilter,
@@ -171,7 +171,7 @@ func ComputeAutoscalers() *schema.Table {
 			{
 				Name:        "gcp_compute_autoscaler_custom_metric_utilizations",
 				Description: "Custom utilization metric policy",
-				Resolver:    fetchComputeAutoscalerCustomMetricUtilizations,
+				Resolver:    client.RetryingResolver(fetchComputeAutoscalerCustomMetricUtilizations),
 				Columns: []schema.Column{
 					{
 						Name:        "autoscaler_cq_id",

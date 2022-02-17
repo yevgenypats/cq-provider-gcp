@@ -13,7 +13,7 @@ func ComputeProjects() *schema.Table {
 	return &schema.Table{
 		Name:         "gcp_compute_projects",
 		Description:  "Represents a Project resource which is used to organize resources in a Google Cloud Platform environment",
-		Resolver:     fetchComputeProjects,
+		Resolver:     client.RetryingResolver(fetchComputeProjects),
 		Multiplex:    client.ProjectMultiplex,
 		IgnoreError:  client.IgnoreErrorHandler,
 		DeleteFilter: client.DeleteProjectFilter,
@@ -113,7 +113,7 @@ func ComputeProjects() *schema.Table {
 			{
 				Name:        "gcp_compute_project_quotas",
 				Description: "A quotas entry",
-				Resolver:    fetchComputeProjectQuotas,
+				Resolver:    client.RetryingResolver(fetchComputeProjectQuotas),
 				Columns: []schema.Column{
 					{
 						Name:        "project_cq_id",

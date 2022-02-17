@@ -12,7 +12,7 @@ func ComputeInterconnects() *schema.Table {
 	return &schema.Table{
 		Name:          "gcp_compute_interconnects",
 		Description:   "Represents an Interconnect resource  An Interconnect resource is a dedicated connection between the GCP network and your on-premises network",
-		Resolver:      fetchComputeInterconnects,
+		Resolver:      client.RetryingResolver(fetchComputeInterconnects),
 		Multiplex:     client.ProjectMultiplex,
 		IgnoreError:   client.IgnoreErrorHandler,
 		DeleteFilter:  client.DeleteProjectFilter,
@@ -131,7 +131,7 @@ func ComputeInterconnects() *schema.Table {
 			{
 				Name:        "gcp_compute_interconnect_circuit_infos",
 				Description: "Describes a single physical circuit between the Customer and Google CircuitInfo objects are created by Google, so all fields are output only",
-				Resolver:    fetchComputeInterconnectCircuitInfos,
+				Resolver:    client.RetryingResolver(fetchComputeInterconnectCircuitInfos),
 				Options:     schema.TableCreationOptions{PrimaryKeys: []string{"interconnect_cq_id", "google_circuit_id"}},
 				Columns: []schema.Column{
 					{
@@ -165,7 +165,7 @@ func ComputeInterconnects() *schema.Table {
 			{
 				Name:        "gcp_compute_interconnect_expected_outages",
 				Description: "Description of a planned outage on this Interconnect",
-				Resolver:    fetchComputeInterconnectExpectedOutages,
+				Resolver:    client.RetryingResolver(fetchComputeInterconnectExpectedOutages),
 				Options:     schema.TableCreationOptions{PrimaryKeys: []string{"interconnect_cq_id", "name"}},
 				Columns: []schema.Column{
 					{
